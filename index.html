@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Civil Service Mock Exam</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">
+      <h1>Civil Service Mock Exam</h1>
+      <p class="sub">Full coverage • Randomized • No-repeat pool (until exhausted)</p>
+    </div>
+    <div class="controls">
+      <label>
+        Exam type
+        <select id="examType">
+          <option value="PRO">Professional (170 items)</option>
+          <option value="SUB">Subprofessional (165 items)</option>
+        </select>
+      </label>
+
+      <label>
+        Timer (minutes)
+        <input id="timerMinutes" type="number" min="0" value="180" />
+      </label>
+
+      <button id="startBtn" type="button">Start Exam</button>
+      <button id="resetPoolBtn" type="button" class="ghost" title="Clears used-question history on this browser">Reset used pool</button>
+    </div>
+  </header>
+
+  <main class="wrap">
+    <section id="status" class="status hidden">
+      <div>
+        <span class="pill" id="pillType"></span>
+        <span class="pill" id="pillCount"></span>
+        <span class="pill" id="pillPool"></span>
+      </div>
+      <div class="timer">
+        <span>Time left:</span>
+        <strong id="timeLeft">--:--:--</strong>
+      </div>
+    </section>
+
+    <section id="examArea" class="hidden">
+      <form id="examForm"></form>
+
+      <div class="actions">
+        <button id="submitBtn" type="button">Submit</button>
+        <button id="newSetBtn" type="button" class="ghost">New randomized set</button>
+      </div>
+    </section>
+
+    <section id="results" class="hidden">
+      <h2>Results</h2>
+      <p id="scoreLine" class="score"></p>
+      <div id="breakdown" class="grid"></div>
+      <details class="review">
+        <summary>Review answers (show)</summary>
+        <div id="reviewList"></div>
+      </details>
+      <div class="actions">
+        <button id="againBtn" type="button">Take another randomized set</button>
+      </div>
+    </section>
+
+    <section class="notes">
+      <h3>Notes</h3>
+      <ul>
+        <li>Questions are generated from a large bank across English, Math, Logic, Reading, and General Information.</li>
+        <li>This site prevents repeats across attempts <em>on the same browser</em> until the pool runs out, then it automatically refreshes.</li>
+        <li>Everything runs offline. Just open <code>index.html</code>.</li>
+      </ul>
+    </section>
+  </main>
+
+  <script src="questions.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
