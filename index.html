@@ -1,82 +1,117 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Civil Service Mock Exam</title>
-  <link rel="stylesheet" href="style.css" />
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>CSC CSE Practice + Mock Exam (1 Question at a Time)</title>
+  <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
-  <header class="topbar">
-    <div class="brand">
-      <h1>Civil Service Mock Exam</h1>
-      <p class="sub">Full coverage • Randomized • No-repeat pool (until exhausted)</p>
-    </div>
-    <div class="controls">
-      <label>
-        Exam type
-        <select id="examType">
-          <option value="PRO">Professional (170 items)</option>
-          <option value="SUB">Subprofessional (165 items)</option>
-        </select>
-      </label>
-
-      <label>
-        Timer (minutes)
-        <input id="timerMinutes" type="number" min="0" value="180" />
-      </label>
-
-      <button id="startBtn" type="button">Start Exam</button>
-      <button id="resetPoolBtn" type="button" class="ghost" title="Clears used-question history on this browser">Reset used pool</button>
-    </div>
+  <header>
+    <h1>CSC CSE Practice + Mock Exam (1 question at a time)</h1>
+    <p>Practice mode = instant answer + explanation. Mock exam = timer + CSC total items (Pro 170 / SubPro 165).</p>
   </header>
 
-  <main class="wrap">
-    <section id="status" class="status hidden">
-      <div>
-        <span class="pill" id="pillType"></span>
-        <span class="pill" id="pillCount"></span>
-        <span class="pill" id="pillPool"></span>
+  <div class="wrap">
+    <div class="grid">
+      <!-- LEFT: CONTROLS -->
+      <div class="card">
+        <h2>Mode</h2>
+        <div class="row mb10">
+          <button id="btnPractice" class="btn-good">Practice Mode</button>
+          <button id="btnMock" class="btn-ghost">Mock Exam Mode</button>
+        </div>
+
+        <div id="practiceControls">
+          <label for="subjectSelect">Choose a subject to focus</label>
+          <select id="subjectSelect"></select>
+
+          <div class="divider"></div>
+
+          <div class="row">
+            <button id="btnNewPractice" class="btn-good">New Question</button>
+            <button id="btnResetPractice" class="btn-ghost">Reset (allow repeats)</button>
+          </div>
+
+          <p class="small mt10">
+            Tip: If you finish all questions for a subject, click <b>Reset</b> to allow repeats.
+          </p>
+        </div>
+
+        <div id="mockControls" class="hidden">
+          <label for="examType">Select exam type</label>
+          <select id="examType">
+            <option value="PRO">Professional (170 items, 3h 10m)</option>
+            <option value="SUB">Subprofessional (165 items, 2h 40m)</option>
+          </select>
+
+          <div class="divider"></div>
+
+          <div class="row">
+            <button id="btnStartMock" class="btn-good">Start Mock Exam</button>
+            <button id="btnStopMock" class="btn-bad" disabled>Stop</button>
+          </div>
+
+          <p class="small mt10">
+            Mock exam uses your question bank. If your bank is smaller than the required items,
+            it will loop after you reset (so add more questions for best results).
+          </p>
+        </div>
+
+        <div class="divider"></div>
+
+        \1
+        <div class="divider"></div>
+
+        <h2>Performance</h2>
+        <div id="perfArea" class="small"></div>
+        <div class="row mt10">
+          <button id="btnResetStats" class="btn-ghost">Reset stats</button>
+        </div>
+
       </div>
-      <div class="timer">
-        <span>Time left:</span>
-        <strong id="timeLeft">--:--:--</strong>
+
+      <!-- RIGHT: QUESTION AREA -->
+      <div class="card">
+        <div class="topbar">
+          <div class="row">
+            <span id="modePill" class="pill">Mode: <b>Practice</b></span>
+            <span id="subjectPill" class="pill">Subject: <b>-</b></span>
+            <span id="progressPill" class="pill">Progress: <b class="mono">0/0</b></span>
+            <span id="accPill" class="pill">Accuracy: <b class="mono">--</b></span>
+          </div>
+          <div class="row">
+            <span id="timerPill" class="pill hidden">Time Left: <b class="mono">--:--</b></span>
+            <span id="scorePill" class="pill hidden">Score: <b class="mono">0</b></span>
+          </div>
+        </div>
+
+        <div id="questionArea"></div>
+
+        <div id="resultsArea" class="hidden">
+          <h2 class="mt0">Mock Exam Results</h2>
+          <div class="scoregrid">
+            <div class="kpi">
+              <div class="small">Total Score</div>
+              <div class="v mono" id="resTotal">0</div>
+            </div>
+            <div class="kpi">
+              <div class="small">Answered</div>
+              <div class="v mono" id="resAnswered">0</div>
+            </div>
+          </div>
+
+          <div class="divider"></div>
+          <h2 class="mb10">Breakdown by Subject</h2>
+          <div id="breakdown"></div>
+
+          <div class="divider"></div>
+          <button id="btnBackToPractice" class="btn-good">Back to Practice</button>
+        </div>
       </div>
-    </section>
+    </div>
+  </div>
 
-    <section id="examArea" class="hidden">
-      <form id="examForm"></form>
-
-      <div class="actions">
-        <button id="submitBtn" type="button">Submit</button>
-        <button id="newSetBtn" type="button" class="ghost">New randomized set</button>
-      </div>
-    </section>
-
-    <section id="results" class="hidden">
-      <h2>Results</h2>
-      <p id="scoreLine" class="score"></p>
-      <div id="breakdown" class="grid"></div>
-      <details class="review">
-        <summary>Review answers (show)</summary>
-        <div id="reviewList"></div>
-      </details>
-      <div class="actions">
-        <button id="againBtn" type="button">Take another randomized set</button>
-      </div>
-    </section>
-
-    <section class="notes">
-      <h3>Notes</h3>
-      <ul>
-        <li>Questions are generated from a large bank across English, Math, Logic, Reading, and General Information.</li>
-        <li>This site prevents repeats across attempts <em>on the same browser</em> until the pool runs out, then it automatically refreshes.</li>
-        <li>Everything runs offline. Just open <code>index.html</code>.</li>
-      </ul>
-    </section>
-  </main>
-
-  <script src="questions.js"></script>
   <script src="app.js"></script>
 </body>
 </html>
